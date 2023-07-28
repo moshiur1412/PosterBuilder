@@ -1,30 +1,24 @@
 <?php
-// Check if the POST parameter "imageData" is set
-if (isset($_POST['imageData'])) {
-  // Get the base64 encoded image data
-  $imageData = $_POST['imageData'];
+// Get the content sent by the AJAX request
+$content = $_POST['content'];
 
-  // Remove the "data:image/png;base64," part from the data URL
-  $imageData = str_replace('data:image/png;base64,', '', $imageData);
+// Create a new image from the content
+$image = imagecreatetruecolor(800, 400); // Set the image dimensions
+$bgColor = imagecolorallocate($image, 255, 255, 255); // Set the background color to white
+imagefill($image, 0, 0, $bgColor);
 
-  // Decode the base64 image data
-  $decodedImageData = base64_decode($imageData);
+// Add the content to the image
+$fontColor = imagecolorallocate($image, 0, 0, 0); // Set the font color to black
+$font = 'poppins_medium.ttf'; // Set the path to your font file
+imagettftext($image, 20, 0, 20, 50, $fontColor, $font, $content);
 
-  // Generate a unique filename for the image
-  $filename = 'captured_image_' . uniqid() . '.png';
+// Save the image as a PNG file
+$filename = 'captured_image_' . uniqid() . '.png'; // Generate a unique filename
+imagepng($image, 'assets/downloads/' . $filename); // Save the image in the 'assets/downloads' directory
 
-  // Specify the path where you want to save the image (make sure the folder exists and has write permissions)
-  $savePath = '/assets/downloads/' . $filename;
+// Free up memory
+imagedestroy($image);
 
-  // Save the image to the specified path
-  if (file_put_contents($savePath, $decodedImageData)) {
-    // Send the generated filename back to the frontend
-    echo $filename;
-  } else {
-    // Error handling (if needed)
-    echo 'Error: Unable to save the image.';
-  }
-} else {
-  echo 'Error: Image data not received.';
-}
+// Return the URL of the saved image
+echo 'assets/downloads/' . $filename;
 ?>

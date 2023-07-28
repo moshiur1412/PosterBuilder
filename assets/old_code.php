@@ -1,4 +1,6 @@
 <?php
+
+phpinfo();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['imageData'])) {
     $imageData = $_POST['imageData'];

@@ -76,7 +76,7 @@ function defaultLoading() {
     // Screen Capture Section --> 
     const liveScreenCapture = document.createElement('div');
     liveScreenCapture.id = "live_screen_capture";
-    liveScreenCapture.classList.add('m-3', 'px-9', 'py-3', 'space-y-7');
+    liveScreenCapture.classList.add('m-3', 'px-9', 'py-3', 'space-y-7', 'bg-gray-100');
 
     const poster_title = document.createElement('h1');
     poster_title.id = 'live_heading_text';
@@ -90,14 +90,13 @@ function defaultLoading() {
 
     const poster_description = document.createElement('p');
     poster_description.id = 'live_description';
-    poster_description.classList.add('text-2xl', 'text-left', 'whitespace-break-spaces');
+    poster_description.classList.add('pb-3', 'text-2xl', 'text-left', 'whitespace-break-spaces');
     liveScreenCapture.appendChild(poster_description);
     liveSectionDiv.appendChild(liveScreenCapture);
 
     const submitButton = document.createElement('button');
     submitButton.classList.add('absolute', 'bottom-11', 'left-3/4', 'transform', '-translate-x-1/2');
     submitButton.innerHTML = "Download";
-    submitButton.addEventListener('click', saveAsImage);
     submitButton.id = 'download_button';
     liveSectionDiv.appendChild(submitButton);
 
@@ -528,30 +527,3 @@ document.addEventListener('input', function (event) {
         updateDescriptionLiveView();
     }
 });
-
-// Function to capture the content as an image and create a downloadable link
-function saveAsImage() {
-    // Get the content from the live_screen_capture div
-    const liveScreenCapture = document.getElementById('live_screen_capture');
-
-    // Convert the div content to an image using html2canvas library
-    html2canvas(liveScreenCapture).then(function (canvas) {
-        // Get the data URL of the canvas
-        const imageDataURL = canvas.toDataURL('image/png');
-
-        // Create a downloadable link for the image
-        const downloadLink = document.createElement('a');
-        downloadLink.href = imageDataURL;
-        downloadLink.download = 'captured_image.png'; // Set the download attribute to specify the filename
-        downloadLink.style.display = 'none';
-
-        // Add the link to the document body
-        document.body.appendChild(downloadLink);
-
-        // Click the link programmatically to trigger the download
-        downloadLink.click();
-
-        // Clean up: remove the link from the document body
-        document.body.removeChild(downloadLink);
-    });
-}
