@@ -33,7 +33,7 @@ To set up the Poster Builder application on your local machine, follow these ste
 
 2. Clone the PosterBuilder repository from GitHub using the following command:
 ```
-git clone https://github.com/moshiur1412/PosterBuilder
+git clone https://github.com/moshiur1412/PosterBuilder.git
 
 ```
 3. Navigate to the cloned directory using the terminal:
