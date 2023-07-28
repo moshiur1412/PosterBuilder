@@ -2,15 +2,49 @@
 <html class="h-full bg-gray-100 m-0">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="js/tailwincss.js"></script>
+    <script src="js/html2canvas.js"></script>
 </head>
 
 <body class="h-full m-0 font-sans">
-	<div id="app"></div>
+    <div id="app"></div>
 </body>
+
+<!-- Dynamically Drawing Elements  -->
 <script type="text/javascript" src="js/index.js"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+    const downloadButton = document.getElementById('download_button');
+    downloadButton.addEventListener('click', downloadLiveSection);
+    // Function to capture the content as an image and create a downloadable link
+    
+    function downloadLiveSection() {
+
+        const liveScreenCapture = document.getElementById('live_screen_capture');
+
+        html2canvas(liveScreenCapture).then(function (canvas) {
+        
+            const imageDataURL = canvas.toDataURL('image/png');
+
+            // Create a downloadable link for the image
+            const downloadLink = document.createElement('a');
+            downloadLink.href = imageDataURL;
+            downloadLink.download = 'poster.png'; // Set the download attribute to specify the filename
+            downloadLink.style.display = 'none';
+
+            // Add the link to the document body
+            document.body.appendChild(downloadLink);
+
+            // Click the link programmatically to trigger the download
+            downloadLink.click();
+
+            // Clean up: remove the link from the document body
+            document.body.removeChild(downloadLink);
+        });
+    }
+
+</script>
 
 </html>
