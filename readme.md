@@ -13,6 +13,8 @@ The Poster Builder application allows users to create customized posters using v
 
 The Poster Builder application allows users to create eye-catching posters with ease. It provides a user-friendly interface for designing posters that cater to individual preferences and creative needs.
 
+## Demo View
+![arc](poster_builder_demo.jpg?raw=true 'poster_builder')
 ## Technology Stack
 
 The Poster Builder application is built using the following technologies:
