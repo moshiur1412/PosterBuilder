@@ -15,6 +15,7 @@ The Poster Builder application allows users to create eye-catching posters with 
 
 ## Demo View
 ![arc](poster_builder_demo.jpg?raw=true 'poster_builder')
+
 ## Technology Stack
 
 The Poster Builder application is built using the following technologies:
