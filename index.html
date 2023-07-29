@@ -8,40 +8,49 @@
 </head>
 
 <body class="h-full m-0 font-sans">
-    <!DOCTYPE html>
-    <html class="h-full bg-gray-100 m-0">
+    <div id="app"></div>
+    <script src="assets/js/index.js"></script>
+    <script>
+        // Get form element and buttons
+        const posterForm = document.getElementById('dynamic_form');
+        const downloadButton = document.getElementById('download_button');
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+        // Add event listener to the download button
+        downloadButton.addEventListener('click', () => {
+            const formData = new FormData(posterForm);
+            fetch('create_poster.php', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok.');
+                    }
+                })
+                .then((data) => {
+                    // console.log(data);
+                    const imageURL = data.image_url;
+                    if (imageURL) {
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = imageURL;
+                        downloadLink.download = 'generated_poster.jpg';
+                        downloadLink.style.display = 'none';
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        URL.revokeObjectURL(imageURL);
+                        downloadLink.remove();
+                    } else {
+                        console.error('Error: No image URL received.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
 
-    <body class="h-full m-0 font-sans">
-        <div id="app"></div>
-    </body>
-    <script type="text/javascript" src="js/index.js"></script>
-<script src="js/dom_to_image.js"></script>
+    </script>
+</body>
 
-<script>
-    
-// Add click event listener to the download button
-document.getElementById('download_button').addEventListener('click', saveAsImage);
-
-
-// Function to send AJAX request to PHP and handle the image download
-function saveAsImage() {
-    const liveScreenCapture = document.getElementById('live_screen_capture');
-
-    domtoimage.toPng(liveScreenCapture).then((data) =>{
-        var link = document.createElement("a");
-        link.download = 'poster.png';
-        link.href = data;
-        link.click();
-    });
-}
-
-      // Add click event listener to the download button    
-
-</script>
-    </html>
+</html>

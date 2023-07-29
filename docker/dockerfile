@@ -3,6 +3,8 @@ FROM php:8.0.0-apache
 WORKDIR /var/www/html/
 
 RUN chown -R 777 /var/www/html/
+RUN chown -R 777 /var/www/html/assets/downloads/
+RUN chown -R 777 /var/www/html/assets/uploads/
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
 apt-get update -yqq && \

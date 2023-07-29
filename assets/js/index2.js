@@ -1,5 +1,5 @@
 const appDiv = document.getElementById('app');
-// const form = document.createElement('form'); // Declare 'form' globally
+const dynamicForm = document.createElement('form'); // Declare 'form' globally
 let headingSectionCreated = false; // To track whether the heading section is already created
 let imageSectionCreated = false; // To track whether the image section is already created
 let descriptionSectionCreated = false; // To track whether the description section is already created
@@ -26,12 +26,15 @@ function defaultLoading() {
 
     dyanamicDiv.id = "dynamic_div_section";
     dyanamicDiv.classList.add('pt-5', 'space-y-9');
+    dynamicForm.id = "dynamic_form";
+    dynamicForm.enctype = "multipart/form-data";
 
+    dyanamicDiv.appendChild(dynamicForm);
     itemDiv.appendChild(dyanamicDiv);
 
     const title_items = document.createElement('h3');
-    title_items.innerHTML = "Items";
     title_items.id = "title_items";
+    title_items.innerHTML = "Items";
 
     title_items.classList.add('mt-3', 'text-center', 'font-bold', 'p-3', 'w-full');
     itemDiv.appendChild(title_items);
@@ -76,11 +79,11 @@ function defaultLoading() {
     // Screen Capture Section --> 
     const liveScreenCapture = document.createElement('div');
     liveScreenCapture.id = "live_screen_capture";
-    liveScreenCapture.classList.add('m-3', 'px-9', 'py-3', 'space-y-7', 'bg-gray-100');
+    liveScreenCapture.classList.add('m-3', 'px-9', 'py-3', 'space-y-7', 'bg-gray-100', 'text-left', 'whitespace-break-spaces', 'break-words');
 
     const poster_title = document.createElement('h1');
     poster_title.id = 'live_heading_text';
-    poster_title.classList.add('text-5xl', 'font-blod', 'text-left', 'break-words');
+    poster_title.classList.add('text-5xl', 'font-blod')
     liveScreenCapture.appendChild(poster_title);
 
     const poster_image = document.createElement('img');
@@ -90,7 +93,7 @@ function defaultLoading() {
 
     const poster_description = document.createElement('p');
     poster_description.id = 'live_description';
-    poster_description.classList.add('pb-3', 'text-2xl', 'text-left', 'whitespace-break-spaces');
+    poster_description.classList.add('pb-3', 'text-2xl');
     liveScreenCapture.appendChild(poster_description);
     liveSectionDiv.appendChild(liveScreenCapture);
 
@@ -120,8 +123,8 @@ function generateHeadingSection() {
 
     // Create the new heading section
     const headingOptionsDiv = document.createElement('div');
-    headingOptionsDiv.classList.add('m-5', 'p-5', 'flex', 'flex-wrap', 'border', 'border-5', 'shadow', 'justify-between');
     headingOptionsDiv.id = 'heading_section';
+    headingOptionsDiv.classList.add('m-5', 'p-5', 'flex', 'flex-wrap', 'border', 'border-5', 'shadow', 'justify-between');
 
     const headingTitle = document.createElement('h2');
     headingTitle.classList.add('flex', 'relative', 'bottom-11', 'bg-gray-300', 'px-5', 'py-3', 'rounded-lg');
@@ -143,7 +146,6 @@ function generateHeadingSection() {
     const posterTitleInput = document.createElement('input');
     posterTitleInput.type = 'text';
     posterTitleInput.name = 'heading';
-    posterTitleInput.id = 'poster_title';
     posterTitleInput.required = true;
     posterTitleInput.classList.add('w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'focus:outline-none', 'focus:border-blue-500', 'mb-2');
     headingOptionsDiv.appendChild(posterTitleInput);
@@ -161,7 +163,7 @@ function generateHeadingSection() {
             // Set the selected position in the form data
             const positionInput = document.createElement('input');
             positionInput.type = 'hidden';
-            positionInput.name = 'poster_heading_position';
+            positionInput.name = 'heading_position';
             positionInput.value = option;
             // Update the live view for heading position
             updateHeadingPosition(option);
@@ -197,7 +199,8 @@ function generateHeadingSection() {
     headingOptionsDiv.appendChild(headingColorButtonsDiv);
 
     // Add the full options ---->
-    dyanamicDiv.appendChild(headingOptionsDiv);
+    dynamicForm.appendChild(headingOptionsDiv)
+    // dyanamicDiv.appendChild(headingOptionsDiv);
 
     headingSectionCreated = true; // Set the heading section status to created
     headingBtn.classList.add('hidden'); // Hide the "Heading Generate" button when the heading section is generated
@@ -234,8 +237,8 @@ function generateImageSection() {
 
     // Create the new Image section
     const uploadImageDiv = document.createElement('div');
-    uploadImageDiv.classList.add('m-5', 'p-5', 'flex', 'flex-wrap', 'border', 'border-5', 'shadow', 'justify-between');
     uploadImageDiv.id = 'image_section';
+    uploadImageDiv.classList.add('m-5', 'p-5', 'flex', 'flex-wrap', 'border', 'border-5', 'shadow', 'justify-between');
 
 
     const posterImage = document.createElement('h2');
@@ -262,24 +265,21 @@ function generateImageSection() {
 </svg> <p> <strong> Click to Upload </strong> or Drag & Drop Image <br> 
 SVG, PNG, JPG or GIF (Max. 800x400px) </p>
 `;
-    uploadImageDiv.appendChild(dropZone);
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    fileInput.name = 'poster_image'; // Set the name attribute to 'poster_image'
+    // Handle the file selected event
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        handleImageFile(file);
+    });
 
     // Handle the click event to open the file picker
     dropZone.addEventListener('click', () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.style.display = 'none';
-
-        // Handle the file selected event
-        input.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            handleImageFile(file);
-        });
-
-        document.body.appendChild(input);
-        input.click();
-        document.body.removeChild(input);
+        // Trigger the click event on the file input when the dropZone is clicked
+        fileInput.click();
     });
 
     // Handle the drag and drop functionality
@@ -300,7 +300,12 @@ SVG, PNG, JPG or GIF (Max. 800x400px) </p>
         handleImageFile(file);
     });
 
-    dyanamicDiv.appendChild(uploadImageDiv);
+    dropZone.appendChild(fileInput);
+
+    uploadImageDiv.appendChild(dropZone);
+
+    dynamicForm.appendChild(uploadImageDiv)
+    // dyanamicDiv.appendChild(uploadImageDiv);
     imageSectionCreated = true; // Set the image section status to created
     imageBtn.classList.add('hidden'); // Hide the "Image Generate" button when the image section is generated
 
@@ -312,11 +317,16 @@ function handleImageFile(file) {
         return;
     }
 
-    // You can add additional logic here to handle the file, like displaying a preview, uploading to a server, etc.
-    console.log('Selected image:', file.name);
+   // Create a new FormData object
+   const formData = new FormData();
 
-    // Update the live view for the image
-    updateImageLiveView(file);
+   // Append the image file to the FormData object
+   formData.append('poster_image', file);
+
+   // You can now submit this formData object along with other form data in your form submission function.
+
+   // Update the live view for the image
+   updateImageLiveView(file);
 }
 
 
@@ -351,36 +361,36 @@ function generateDescriptionSection() {
     }
 
     // Create the new Description section
-    const newSection = document.createElement('div');
-    newSection.classList.add('m-5', 'p-5', 'flex', 'flex-wrap', 'border', 'border-5', 'shadow', 'justify-between');
-    newSection.id = 'description_section';
+    const descriptionDiv = document.createElement('div');
+    descriptionDiv.id = 'description_section';
+    descriptionDiv.classList.add('m-5', 'p-5', 'flex', 'flex-wrap', 'border', 'border-5', 'shadow', 'justify-between');
 
     const descTitle = document.createElement('h2');
     descTitle.classList.add('flex', 'relative', 'bottom-11', 'bg-gray-300', 'px-5', 'py-3', 'rounded-lg');
     descTitle.innerHTML = 'Description';
-    newSection.appendChild(descTitle);
+    descriptionDiv.appendChild(descTitle);
 
     // Create the close button for the heading section
     const closeButton = document.createElement('button');
     closeButton.innerText = 'X';
     closeButton.classList.add('text-base', 'justify-end', 'cursor-pointer', 'flex', 'p-3', 'rounded-full', 'text-red-500', 'bg-gray-50', 'relative', 'bottom-11', 'left-9', 'font-bold');
     closeButton.addEventListener('click', () => {
-        newSection.remove(); // Remove the heading section when the close button is clicked
+        descriptionDiv.remove(); // Remove the heading section when the close button is clicked
         headingSectionCreated = false; // Reset the heading section status to not created
         descriptionBtn.classList.remove('hidden'); // Show the "Heading Generate" button when the section is closed
     });
-    newSection.appendChild(closeButton);
+    descriptionDiv.appendChild(closeButton);
 
     // Create the Poster Description textarea
     const posterDescriptionTextarea = document.createElement('textarea');
     posterDescriptionTextarea.name = 'description';
     posterDescriptionTextarea.rows = '5';
     posterDescriptionTextarea.required = true;
-    posterDescriptionTextarea.id = 'poster_description';
     posterDescriptionTextarea.classList.add('w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded', 'focus:outline-none', 'focus:border-blue-500');
-    newSection.appendChild(posterDescriptionTextarea);
+    descriptionDiv.appendChild(posterDescriptionTextarea);
 
-    dyanamicDiv.appendChild(newSection);
+    dynamicForm.appendChild(descriptionDiv)
+    // dyanamicDiv.appendChild(descriptionDiv);
     descriptionSectionCreated = true; // Set the description section status to created
     descriptionBtn.classList.add('hidden'); // Hide the "Description Generate" button when the description section is generated
 }
@@ -442,88 +452,70 @@ descriptionBtn.addEventListener('click', () => {
 
 
 
-
+const liveHeadingText = document.getElementById('live_heading_text');
 // Function to update the live view with the current input value for the heading section
 function updateHeadingLiveView() {
     // Get the value from the input field
-    const inputField = document.getElementById('poster_title');
+    const heading = document.querySelector('[name="heading"]');
 
-    const inputValue = inputField.value;
+    const inputValue = heading.value;
 
-    // console.log({ inputValue });
-
-    // Get the live view element
-    const liveView = document.getElementById('live_heading_text');
+    // console.log( inputValue );
 
     // Check if the input field and live view elements are found in the DOM
-    if (!inputField || !liveView) {
+    if (!heading || !liveHeadingText) {
         console.error('Input field or live view element not found.');
         return;
     }
 
     // Update the live view with the input value
-    liveView.textContent = inputValue;
+    liveHeadingText.textContent = inputValue;
 }
 
 
 
 // Function to update the live view with the current heading position
 function updateHeadingPosition(position) {
-    // Get the live view element
-    const liveView = document.getElementById('live_heading_text');
-
-    // console.log({ position });
-
-    // Check if the live view element is found in the DOM
-    if (!liveView) {
+    if (!liveHeadingText) {
         console.error('Live view element not found.');
         return;
     }
-
-    // Update the live view with the heading position
-    liveView.style.textAlign = position;
+    liveHeadingText.style.textAlign = position;
 }
 
 // Function to update the live view with the current heading color
 function updateHeadingColor(color) {
-    // Get the live view element
-    const liveView = document.getElementById('live_heading_text');
-
-    // console.log({ color });
-
-    // Check if the live view element is found in the DOM
-    if (!liveView) {
+    if (!liveHeadingText) {
         console.error('Live view element not found.');
         return;
     }
-
-    // Update the live view with the heading color
-    liveView.style.color = color;
+    liveHeadingText.style.color = color;
 }
 
 
-// Function to updateDescription Live View-->
+// Function to updateDescription Live View
 function updateDescriptionLiveView() {
+    // Use document.querySelector() to get the first element with the name 'description'
+    const inputDescription = document.querySelector('[name="description"]');
+    
+    // Check if the input element exists before trying to access its value
+    if (inputDescription) {
+        const inputValue = inputDescription.value;
+        console.log(inputValue);
 
-    const inputField = document.getElementById('poster_description');
-    const inputValue = inputField.value;
-
-    const live_description = document.getElementById('live_description');
-    live_description.textContent = inputValue;
-
-
+        const livedescription = document.getElementById('live_description');
+        livedescription.textContent = inputValue;
+    }
 }
-
 
 // Listen for input events on the input field and call the updateHeadingLiveView function
 document.addEventListener('input', function (event) {
     const target = event.target;
-    // console.log({target});
-
-    if (target.id === 'poster_title') {
+    console.log(target.name);
+    if (target.name === 'heading') {
         updateHeadingLiveView();
     }
-    if (target.id == 'poster_description') {
+    if (target.name == 'description') {
         updateDescriptionLiveView();
     }
 });
