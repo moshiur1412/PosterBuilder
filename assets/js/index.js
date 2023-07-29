@@ -149,20 +149,18 @@ function generateHeadingSection() {
         const headingPositionButtonsDiv = document.createElement('div');
         headingPositionButtonsDiv.classList.add('flex', 'space-x-4', 'mb-2', 'w-1/2');
         const positionOptions = ['left', 'center', 'right'];
+        const positionInput = document.createElement('input');
+        positionInput.type = 'hidden';
+        positionInput.name = 'heading_position';
+
         positionOptions.forEach(option => {
             const positionButton = document.createElement('button');
             positionButton.type = 'button';
             positionButton.classList.add('w-8', 'h-8', 'rounded-full', 'focus:outline-none');
             positionButton.innerHTML = getIconForPosition(option);
-            positionButton.addEventListener('click', () => {
-                // Set the selected position in the form data
-                const positionInput = document.createElement('input');
-                positionInput.type = 'hidden';
-                positionInput.name = 'heading_position';
+            positionButton.addEventListener('click', () => {              
                 positionInput.value = option;
-                // Update the live view for heading position
                 updateHeadingPosition(option);
-
                 positionButton.appendChild(positionInput);
 
             });
@@ -174,20 +172,22 @@ function generateHeadingSection() {
         const headingColorButtonsDiv = document.createElement('div');
         headingColorButtonsDiv.classList.add('flex', 'space-x-4', 'w-1/2', 'justify-end');
         const colorOptions = ['blue', 'black', 'green'];
+
+        const colorInput = document.createElement('input');
+            colorInput.type = 'hidden';
+            colorInput.name = 'heading_color';
+
         colorOptions.forEach(option => {
             const colorButton = document.createElement('button');
             colorButton.type = 'button';
             colorButton.classList.add('w-8', 'h-8', 'rounded-full', 'focus:outline-none');
             colorButton.style.backgroundColor = option;
+           
+    
             colorButton.addEventListener('click', () => {
-                // Set the selected color in the form data
-                const colorInput = document.createElement('input');
-                colorInput.type = 'hidden';
-                colorInput.name = 'heading_color';
                 colorInput.value = option;
-                colorButton.appendChild(colorInput);
-                // Update the live view for heading color
                 updateHeadingColor(option);
+                colorButton.appendChild(colorInput);
             });
             headingColorButtonsDiv.appendChild(colorButton);
         });
