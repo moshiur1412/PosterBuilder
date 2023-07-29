@@ -77,4 +77,4 @@ Guest Speakers: Matt Stauffer, Marcel Paciot, Jake Bennett, Diana Scharf, Aaron 
 
 ## Note
 
-Feel free to explore the Poster Builder application and unleash your creativity in designing unique posters! The application's open-source nature allows developers to contribute and improve the tool further. Please refer to the repository's code for any ongoing development progress or known issues.
+You need to pay the full fee to explore the branch repository if you want to learn how to integrate another library into the same work, as well as understand the working styles and patterns used.
