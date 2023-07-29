@@ -98,58 +98,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($uploaded_image)) {
         // Function to wrap and add title text to the default image
 
-        $titleY = 100;
-        // Calculate x-coordinate for the title
-        $titleX = 5; // Left align by default
-        if ($heading_position === 'center') {
-            $titleX = ($imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2]) / 2;
-        } elseif ($heading_position === 'right') {
-            $titleX = $imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2] - 5;
-        }
-
+        $titleX = 35;
         $titleY = 100;
 
         // Add title to the default image
         $maxTitleWidth = $imageWidth + 100; // Leave some margin from the right side
-        addTitleToImage($default_image, $bold_font_path, $heading, $maxTitleWidth, $titleX, $titleY, $heading_color);
+        addTitleToImage($default_image, $bold_font_path, $heading, $maxTitleWidth, $titleX, $titleY, $heading_color, $heading_position);
 
         // Calculate x-coordinate for the description
         $descriptionX = 5; // Left align by default
-        if ($description_position === 'center') {
-            $descriptionX = ($imageWidth - imagettfbbox(20, 0, $fontPath, $wrappedDescription[0])[2]) / 2;
-        } elseif ($description_position === 'right') {
-            $descriptionX = $imageWidth - imagettfbbox(20, 0, $fontPath, $wrappedDescription[0])[2] - 5;
-        }
-
         $descriptionY = $imageHeight - 50;
 
         // Add description to the default image
         $maxDescriptionWidth = $imageWidth + 35; // Leave some margin from both sides
         addDescriptionToImage($default_image, $medium_font_path, $description, $maxDescriptionWidth, $descriptionX, $descriptionY, $description_color);
-    }else{
-        // uploaded image --> 
-        
+    } else {
+
         // Calculate x-coordinate for the title
+        $titleY = 85;
         $titleX = $uploadedImageX; // Left align by default
-        if ($heading_position === 'center') {
-            $titleX = $uploadedImageWidth / 2;
-        } elseif ($heading_position === 'right') {
-            $titleX = $uploadedImageWidth - 45;
-        }
-        
-        $titleY = $uploadedImageY - 3;
 
         // Add title to the default image
-        $maxTitleWidth = $imageWidth + 100; // Leave some margin from the right side
-        addTitleToImage($default_image, $bold_font_path, $heading, $maxTitleWidth, $titleX, $titleY, $heading_color);
+        addTitleToImage($default_image, $bold_font_path, $heading, $imageWidth, $titleX, $titleY, $heading_color, $heading_position);
 
         // Calculate x-coordinate for the description
         $descriptionX = $uploadedImageX; // Left align by default
-        $descriptionY = $uploadedImageHeight + 135;
+        $descriptionY = $imageHeight - 215;
+        $descriptionBoundingBox = imagettfbbox(20, 0, $medium_font_path, $description);
+        $descriptionWidth = $descriptionBoundingBox[2] - $descriptionBoundingBox[0];
+
+        // Check if the description exceeds the right boundary
+        if ($descriptionX + $descriptionWidth > $imageWidth) {
+            $descriptionX = $imageWidth - $descriptionWidth; // Move the description inside the image
+        }
+
+        // Check if the description goes outside the left boundary
+        if ($descriptionX < $uploadedImageX) {
+            $descriptionX = $uploadedImageX; // Move the description back to the left align
+        }
 
         // Add description to the default image
-        $maxDescriptionWidth = $uploadedImageWidth + 35; // Leave some margin from both sides
-        addDescriptionToImage($default_image, $medium_font_path, $description, $maxDescriptionWidth, $descriptionX, $descriptionY, $description_color);
+        addDescriptionToImage($default_image, $medium_font_path, $description, $imageWidth, $descriptionX, $descriptionY, $description_color);
     }
 
     // Save the final image to a file
