@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Calculate the position to center the uploaded image on the default image
                 $uploadedImageX = ($imageWidth - 800) / 2; // Center horizontally with a fixed width of 800
-                $uploadedImageY = ($imageHeight - 400) / 2; // Center vertically with a fixed height of 400
+                $uploadedImageY = ($imageHeight - 575) / 2; // Center vertically with a fixed height of 400
 
                 // Create a new image with fixed dimensions (800x400)
                 $resized_uploaded_image = imagecreatetruecolor(800, 400);
@@ -89,27 +89,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Check if file already exists
         if (file_exists($target_file)) {
+            unlink($target_file);
             echo "Existing uploaded image has been removed.";
         }
 
     }
 
+    // Function to wrap text and calculate its dimensions
+    function wrapText($image, $font, $text, $maxWidth)
+    {
+        $words = explode(' ', $text);
+        $lines = [];
+        $currentLine = '';
+
+        foreach ($words as $word) {
+            $testLine = $currentLine . $word . ' ';
+            $testBox = imagettfbbox(25, 0, $font, $testLine);
+
+            if ($testBox[2] > $maxWidth && !empty($currentLine)) {
+                $lines[] = trim($currentLine);
+                $currentLine = $word . ' ';
+            } else {
+                $currentLine = $testLine;
+            }
+        }
+
+        $lines[] = trim($currentLine);
+        return $lines;
+    }
+
+
+    // Set the maximum width for title and description texts
+    $maxTitleWidth = $uploadedImageWidth + 100; // Leave some margin from the right side
+    // print_r($uploadedImageWidth);
+    // Wrap the title and description texts if they exceed the maximum width
+    $wrappedTitle = wrapText($default_image, $fontPath, $heading, $maxTitleWidth);
 
     // Calculate x-coordinate for the title
-    $titleX = 5; // Left align by default
+    $titleX = 35; // Left align by default
     if ($heading_position === 'center') {
         $titleX = ($imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2]) / 2;
     } elseif ($heading_position === 'right') {
-        $titleX = $imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2] - 5;
+        $titleX = $imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2] - 45;
     }
 
-    // Calculate x-coordinate for the description
-    $descriptionX = 5; // Left align by default
-    if ($description_position === 'center') {
-        $descriptionX = ($imageWidth - imagettfbbox(20, 0, $fontPath, $wrappedDescription[0])[2]) / 2;
-    } elseif ($description_position === 'right') {
-        $descriptionX = $imageWidth - imagettfbbox(20, 0, $fontPath, $wrappedDescription[0])[2] - 5;
-    }
+    $titleY = $uploadedImageY - 50;
 
     // Set the title color
     $textColor = imagecolorallocate($default_image, 0, 0, 0); // Default to black color
@@ -117,6 +141,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $textColor = imagecolorallocate($default_image, 0, 0, 255); // Blue color
     } elseif ($heading_color === 'green') {
         $textColor = imagecolorallocate($default_image, 0, 128, 0); // Green color
+    }
+
+
+    $fontsize = 30;
+    $angle = 0;
+    $titleHeight = 0; // Initialize the title height
+    foreach ($wrappedTitle as $line) {
+        imagettftext($default_image, $fontsize, $angle, $titleX, $titleY, $textColor, $fontPath, $line);
+        $titleY += 40; // Increase the Y-coordinate for the next line
+    }
+
+    // Calculate x-coordinate for the description
+    $descriptionX = $uploadedImageX; // Left align by default
+    if ($description_position === 'center') {
+        $descriptionX = ($imageWidth - imagettfbbox(20, 0, $fontPath, $wrappedDescription[0])[2]) / 2;
+    } elseif ($description_position === 'right') {
+        $descriptionX = $imageWidth - imagettfbbox(20, 0, $fontPath, $wrappedDescription[0])[2] - 5;
     }
 
     // Set the description color
@@ -127,103 +168,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $descriptionColor = imagecolorallocate($default_image, 0, 128, 0); // Green color
     }
 
-
-
-// Function to wrap text and calculate its dimensions
-function wrapText($image, $font, $text, $maxWidth)
-{
-    $words = explode(' ', $text);
-    $lines = [];
-    $currentLine = '';
-
-    foreach ($words as $word) {
-        $testLine = $currentLine . $word . ' ';
-        $testBox = imagettfbbox(30, 0, $font, $testLine);
-
-        if ($testBox[2] > $maxWidth && !empty($currentLine)) {
-            $lines[] = trim($currentLine);
-            $currentLine = $word . ' ';
-        } else {
-            $currentLine = $testLine;
-        }
-    }
-
-    $lines[] = trim($currentLine);
-    return $lines;
-}
-
-    // Set the maximum width for title and description texts
-    $maxTitleWidth = $uploadedImageWidth - 10; // Leave some margin from the right side
-    $maxDescriptionWidth = $uploadedImageWidth - 20; // Leave some margin from both sides
-
-    // Wrap the title and description texts if they exceed the maximum width
-    $wrappedTitle = wrapText($default_image, $fontPath, $heading, $maxTitleWidth);
-    $wrappedDescription = wrapText($default_image, $fontPath, $description, $maxDescriptionWidth);
-
-    // Determine y-coordinates for title and description
-    $titleY = $uploadedImageY - 50;
-    // $titleX  = $uploadedImageX + 10; 
-
-    // Calculate the available space for the title
-    $availableTitleWidth = $uploadedImageWidth - 800; // 800 is the width of the uploaded image
-
-    // Calculate the starting X-coordinate for the title
-    $titleX = $availableTitleWidth / 2;
-    // $titlePositionY = $uploadedImageY - 30;
-    // Add wrapped title to the default image
-    $fontsize = 30;
-    $angle = 0;
-    $titleHeight = 0; // Initialize the title height
-    foreach ($wrappedTitle as $line) {
-        $titleBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
-        $titleWidth = $titleBox[2] - $titleBox[0];
-
-       
-        // Adjust the title X-coordinate to keep it within the available width
-        if ($titleX + $titleWidth > 800) {
-            $titleX = $availableTitleWidth / 2; // Reset X-coordinate to center
-            $titleY += 40; // Move to the next line
-            $titleHeight += abs($titleBox[7] - $titleBox[1]); // Calculate the height of the current line
-        }
-
-        imagettftext($default_image, $fontsize, $angle, $uploadedImageX, $titleY, $textColor, $fontPath, $line);
-        $titleX += $titleWidth; // Move the X-coordinate for the next line
-    }
-
-  // Calculate the available space for the description
-
-// Starting Y-coordinate for the wrapped description
-$descriptionY = $uploadedImageY + 400 + 30; // 400 is the height of the uploaded image, add some margin (30) for the next line
-
-// Add wrapped description to the default image
-$fontsize = 18;
-$angle = 0;
-
-foreach ($wrappedDescription as $line) {
-    // Calculate the bounding box of the current line of text
-    $descriptionBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
-    print_r($descriptionBox);
-    $descriptionWidth = $descriptionBox[2] - $descriptionBox[0];
-
-    // Check if the current line exceeds the available width
-    if ($descriptionWidth > 800) {
     
-        $descriptionBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
-        $descriptionWidth = $descriptionBox[2] - $descriptionBox[0];
+    function wrapDescriptionText($image, $font, $text, $maxWidth)
+    {
+        $words = explode(' ', $text);
+        $lines = [];
+        $currentLine = '';
+
+        foreach ($words as $word) {
+            $testLine = $currentLine . $word . '  ';
+            $testBox = imagettfbbox(14, 0, $font, $testLine);
+            // print_r($testLine);
+            print_r($testBox[2]);
+            if ($testBox[2] > $maxWidth && !empty($currentLine)) {
+                $lines[] = trim($currentLine);
+                $currentLine = $word . ' ';
+           
+
+            } else {
+                $currentLine = $testLine;
+            }
+        }
+
+        $lines[] = trim($currentLine);
+        return $lines;
     }
 
-    // Calculate the starting X-coordinate to be the same as the uploaded image
-    $descriptionX = $uploadedImageX;
+    $maxDescriptionWidth = $uploadedImageWidth + 45; // Leave some margin from both sides
+    $wrappedDescription = wrapDescriptionText($default_image, $fontPath, $description, $maxDescriptionWidth);
 
-    // Draw the text
-    imagettftext($default_image, $fontsize, $angle, $descriptionX, $descriptionY, $descriptionColor, $fontPath, $line);
 
-    // Increase the Y-coordinate for the next line
-    $descriptionY += abs($descriptionBox[7] - $descriptionBox[1]) + 10; // Add some margin (10) between lines
+    // Add wrapped description to the default image
+    $fontsize = 13;
+    $angle = 0;
+    $descriptionY = $imageHeight - 280;
+    // $descriptionY -= (count($wrappedDescription) - 1) * 0; // Adjust Y-coordinate for wrapped lines
 
-    // $descriptionY += abs($descriptionBox[7] - $descriptionBox[1]) + 10; // Add some margin (10) between lines
-}
+    foreach ($wrappedDescription as $line) {
+        imagettftext($default_image, $fontsize, $angle, $descriptionX, $descriptionY, $descriptionColor, $fontPath, $line);
+        $descriptionY += 5; // Increase the Y-coordinate for the next line
+        // // Calculate the bounding box of the current line of text
+        $descriptionBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
+        // print_r($descriptionBox);
+        // $descriptionWidth = $descriptionBox[2] - $descriptionBox[0];
 
+        // // Check if the current line exceeds the available width
+        // if ($descriptionWidth > 800) {
+
+        //     $descriptionBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
+        //     $descriptionWidth = $descriptionBox[2] - $descriptionBox[0];
+        // }
+
+        // // Draw the text
+        // imagettftext($default_image, $fontsize, $angle, $descriptionX, $descriptionY, $descriptionColor, $fontPath, $line);
+
+        // Increase the Y-coordinate for the next line
+        $descriptionY += abs($descriptionBox[7] - $descriptionBox[1]) + 5; // Add some margin (10) between lines
+
+    }
+
+   
 
 
 
