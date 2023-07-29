@@ -128,16 +128,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         addDescriptionToImage($default_image, $medium_font_path, $description, $maxDescriptionWidth, $descriptionX, $descriptionY, $description_color);
     }else{
         // uploaded image --> 
-        $titleY = $uploadedImageY - 3;
-
+        
         // Calculate x-coordinate for the title
         $titleX = $uploadedImageX; // Left align by default
         if ($heading_position === 'center') {
-            $titleX = ($imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2]) / 2;
+            $titleX = $uploadedImageWidth / 2;
         } elseif ($heading_position === 'right') {
             $titleX = $uploadedImageWidth - 45;
         }
-     
+        
+        $titleY = $uploadedImageY - 3;
+
         // Add title to the default image
         $maxTitleWidth = $imageWidth + 100; // Leave some margin from the right side
         addTitleToImage($default_image, $bold_font_path, $heading, $maxTitleWidth, $titleX, $titleY, $heading_color);

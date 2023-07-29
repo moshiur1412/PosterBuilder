@@ -1,6 +1,6 @@
 # Poster Builder
 
-This Markdown file presents the details of the Poster Builder application, including its three main parts, technology stack, installation process, and references.
+The Poster Builder application allows users to create customized posters using various elements, including headings, images, and descriptions. The flexibility of the tool allows users to use any combination of these elements based on their preference and creative needs.
 
 ## Technology Used
 
@@ -11,11 +11,11 @@ This Markdown file presents the details of the Poster Builder application, inclu
 
 ## Overview
 
-The Poster Builder application allows users to create customized posters using various elements, including headings, images, and descriptions. The flexibility of the tool allows users to use any combination of these elements based on their preference and creative needs.
+The Poster Builder application allows users to create eye-catching posters with ease. It provides a user-friendly interface for designing posters that cater to individual preferences and creative needs.
 
 ## Technology Stack
 
-The application is built using the following technologies:
+The Poster Builder application is built using the following technologies:
 
 - **PHP (Raw):** The backend of the Poster Builder is developed using raw PHP, providing a robust and efficient server-side foundation for the application.
 
@@ -32,22 +32,29 @@ To set up the Poster Builder application on your local machine, follow these ste
 1. Install Docker on your machine. You can download Docker from [docker.com](https://www.docker.com).
 
 2. Clone the PosterBuilder repository from GitHub using the following command:
+
 ```
 git clone https://github.com/moshiur1412/PosterBuilder.git
 
 ```
+
 3. Navigate to the cloned directory using the terminal:
 
 ```
 cd PosterBuilder
 
 ```
+
 4. Use Docker Compose to build and run the application:
+
 ```
 docker-compose up
 
 ```
+
 5. Once the application is up and running, access it in your web browser by clicking [http://localhost:9000](http://localhost:9000). This link will direct you to the Poster Builder interface, where you can start creating posters as per your preferences.
+
+6. Once the application is up and running, access it in your web browser by clicking [http://localhost:9000](http://localhost:9000). This link will direct you to the Poster Builder interface, where you can start creating posters as per your preferences.
 
 ## References
 
@@ -55,13 +62,12 @@ Below are some helpful references related to the technologies used in the Poster
 
 - [JavaScript Tutorial](https://www.javascripttutorial.net)
 - [TailwindCSS Documentation](https://tailwindcss.com/doc)
-- [PHP Documentation](https://www.php.net/download-docs.php)
+- [PHP Documentation - Image Processing and GD](https://www.php.net/manual/en/book.image.php)
 - [Visual Studio Code Terminal Documentation](https://code.visualstudio.com/docs/terminal)
+- [Simple Image Resizer](https://www.simpleimageresizer.com/)
 
-With the Poster Builder application and the mentioned technology stack, users can effortlessly design unique posters tailored to their creative vision.
+## Test Content
 
-
-### Test Content
 ```
 Dev Conf 23
 Main Speaker: Taylor Otwell, Caleb Porzio, Freek Van Der Herten, Nuno Maduro, Jess Archer.
@@ -69,4 +75,6 @@ Guest Speakers: Matt Stauffer, Marcel Paciot, Jake Bennett, Diana Scharf, Aaron 
 
 ```
 
+## Note
 
+Feel free to explore the Poster Builder application and unleash your creativity in designing unique posters! The application's open-source nature allows developers to contribute and improve the tool further. Please refer to the repository's code for any ongoing development progress or known issues.

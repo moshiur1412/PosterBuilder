@@ -25,8 +25,9 @@ function defaultLoading() {
     itemDiv.appendChild(title_components);
 
     dyanamicDiv.id = "dynamic_div_section";
-    dyanamicDiv.classList.add('pt-5', 'space-y-9');
+    dyanamicDiv.classList.add('pt-5');
     dynamicForm.id = "dynamic_form";
+    dynamicForm.classList.add('space-y-9');
     dynamicForm.enctype = "multipart/form-data";
 
     dyanamicDiv.appendChild(dynamicForm);
@@ -202,8 +203,6 @@ function generateHeadingSection() {
     }
 }
 
-
-
 function getIconForPosition(position) {
     if (position === 'left') {
         // return '&#x2190;'; // Unicode character for left arrow
@@ -217,9 +216,6 @@ function getIconForPosition(position) {
     }
     return '';
 }
-
-
-
 
 // Function to generate the Image section
 function generateImageSection() {
@@ -305,7 +301,6 @@ function handleImageFile(file) {
     updateImageLiveView(file);
 }
 
-
 // function to update the live view with the current selected image
 function updateImageLiveView(file) {
     const liveView = document.getElementById('live_image');
@@ -322,7 +317,6 @@ function updateImageLiveView(file) {
 
     reader.readAsDataURL(file);
 }
-
 
 // Function to generate the Description section
 function generateDescriptionSection() {
@@ -416,8 +410,6 @@ descriptionBtn.addEventListener('click', () => {
     generateDescriptionSection();
 });
 
-
-
 const liveHeadingText = document.getElementById('live_heading_text');
 function updateHeadingLiveView() {
     const heading = document.querySelector('[name="heading"]');
@@ -427,7 +419,6 @@ function updateHeadingLiveView() {
     }
 
 }
-
 
 // Function to update the live view with the current heading position
 function updateHeadingPosition(position) {
@@ -446,7 +437,6 @@ function updateHeadingColor(color) {
     }
     liveHeadingText.style.color = color;
 }
-
 
 // Function to updateDescription Live View
 function updateDescriptionLiveView() {
@@ -468,7 +458,6 @@ document.addEventListener('input', function (event) {
         updateDescriptionLiveView();
     }
 });
-
 
 // Get form element and buttons
 const posterForm = document.getElementById('dynamic_form');

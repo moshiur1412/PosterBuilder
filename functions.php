@@ -35,8 +35,6 @@ function addTitleToImage($image, $font, $text, $maxWidth, $x, $y, $color)
             }
         }
 
-
-
          // Function to wrap and add description text to the default image
          function addDescriptionToImage($image, $font, $text, $maxWidth, $x, $y, $color)
          {
