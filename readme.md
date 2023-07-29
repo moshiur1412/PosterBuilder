@@ -47,7 +47,7 @@ cd PosterBuilder
 docker-compose up
 
 ```
-5. Once the application is up and running, access it in your web browser by clicking [http://localhost:8000](http://localhost:8000). This link will direct you to the Poster Builder interface, where you can start creating posters as per your preferences.
+5. Once the application is up and running, access it in your web browser by clicking [http://localhost:9000](http://localhost:9000). This link will direct you to the Poster Builder interface, where you can start creating posters as per your preferences.
 
 ## References
 

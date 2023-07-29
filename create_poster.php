@@ -1,5 +1,5 @@
 <?php
-print_r($_POST);
+// print_r($_POST);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $heading = $_POST["heading"] ?? "Default Heading";
@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description_color = $_POST["description_color"] ?? "black"; // Default to "black"
 
     // Fonts Path 
-    $fontPath = realpath('assets/poppins_medium.ttf');
+    $fontPath = realpath('assets/OpenSans.ttf');
 
     // Load the default image
     $default_image_path = 'assets/default_image.jpg';
@@ -95,6 +95,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
 
+    if(!isset($uploaded_image)){
+        echo "please provide an image";
+    }
     // Function to wrap text and calculate its dimensions
     function wrapText($image, $font, $text, $maxWidth)
     {
@@ -119,21 +122,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 
-    // Set the maximum width for title and description texts
     $maxTitleWidth = $uploadedImageWidth + 100; // Leave some margin from the right side
-    // print_r($uploadedImageWidth);
-    // Wrap the title and description texts if they exceed the maximum width
     $wrappedTitle = wrapText($default_image, $fontPath, $heading, $maxTitleWidth);
 
     // Calculate x-coordinate for the title
-    $titleX = 35; // Left align by default
+    $titleX = $uploadedImageX; // Left align by default
     if ($heading_position === 'center') {
         $titleX = ($imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2]) / 2;
     } elseif ($heading_position === 'right') {
-        $titleX = $imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2] - 45;
+        $titleX = $imageWidth - imagettfbbox(30, 0, $fontPath, $wrappedTitle[0])[2] - 75;
     }
 
-    $titleY = $uploadedImageY - 50;
+    $titleY = $uploadedImageY - 30;
 
     // Set the title color
     $textColor = imagecolorallocate($default_image, 0, 0, 0); // Default to black color
@@ -144,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 
-    $fontsize = 30;
+    $fontsize = 35;
     $angle = 0;
     $titleHeight = 0; // Initialize the title height
     foreach ($wrappedTitle as $line) {
@@ -168,7 +168,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $descriptionColor = imagecolorallocate($default_image, 0, 128, 0); // Green color
     }
 
-    
     function wrapDescriptionText($image, $font, $text, $maxWidth)
     {
         $words = explode(' ', $text);
@@ -177,13 +176,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         foreach ($words as $word) {
             $testLine = $currentLine . $word . '  ';
-            $testBox = imagettfbbox(14, 0, $font, $testLine);
+            $testBox = imagettfbbox(15, 0, $font, $testLine);
             // print_r($testLine);
-            print_r($testBox[2]);
             if ($testBox[2] > $maxWidth && !empty($currentLine)) {
                 $lines[] = trim($currentLine);
                 $currentLine = $word . ' ';
-           
+
 
             } else {
                 $currentLine = $testLine;
@@ -194,50 +192,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return $lines;
     }
 
-    $maxDescriptionWidth = $uploadedImageWidth + 45; // Leave some margin from both sides
+    $maxDescriptionWidth = $uploadedImageWidth + 35; // Leave some margin from both sides
     $wrappedDescription = wrapDescriptionText($default_image, $fontPath, $description, $maxDescriptionWidth);
 
-
     // Add wrapped description to the default image
-    $fontsize = 13;
+    $fontsize = 15;
     $angle = 0;
-    $descriptionY = $imageHeight - 280;
-    // $descriptionY -= (count($wrappedDescription) - 1) * 0; // Adjust Y-coordinate for wrapped lines
-
+    $descriptionY = $imageHeight - 225;
     foreach ($wrappedDescription as $line) {
         imagettftext($default_image, $fontsize, $angle, $descriptionX, $descriptionY, $descriptionColor, $fontPath, $line);
-        $descriptionY += 5; // Increase the Y-coordinate for the next line
-        // // Calculate the bounding box of the current line of text
+        $descriptionY += 5;
         $descriptionBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
-        // print_r($descriptionBox);
-        // $descriptionWidth = $descriptionBox[2] - $descriptionBox[0];
-
-        // // Check if the current line exceeds the available width
-        // if ($descriptionWidth > 800) {
-
-        //     $descriptionBox = imagettfbbox($fontsize, $angle, $fontPath, $line);
-        //     $descriptionWidth = $descriptionBox[2] - $descriptionBox[0];
-        // }
-
-        // // Draw the text
-        // imagettftext($default_image, $fontsize, $angle, $descriptionX, $descriptionY, $descriptionColor, $fontPath, $line);
-
-        // Increase the Y-coordinate for the next line
         $descriptionY += abs($descriptionBox[7] - $descriptionBox[1]) + 5; // Add some margin (10) between lines
 
     }
-
-   
-
-
-
-
 
     // Save the final image to a file
     $final_image_path = 'assets/downloads/generated_poster.jpg';
     imagejpeg($default_image, $final_image_path);
     imagedestroy($default_image);
-
 
     // Get the absolute URL of the generated image
     $base_url = "http://" . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . dirname($_SERVER["REQUEST_URI"] . '?') . '/';
